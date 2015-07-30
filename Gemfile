@@ -9,8 +9,8 @@ gem 'spring', :group => :development
 
 gem 'sqlite3'
 
-group :test do
-  gem 'rspec'
+group :development, :test do
+  gem 'rspec-rails'
 end
 
 
