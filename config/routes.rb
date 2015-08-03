@@ -5,8 +5,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, except: [:new, :edit]
       # Don't deeply nest the resources, otherwise things start to look too ugly
-      resources :notes, except: [:new, :edit]
-
+      resources :notes, except: [:new, :edit] do
+        resources :entries, except: [:new, :edit]
+      end
     end
   end
 

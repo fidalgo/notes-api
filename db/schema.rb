@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803151336) do
+ActiveRecord::Schema.define(version: 20150803170936) do
+
+  create_table "entries", force: :cascade do |t|
+    t.string   "line"
+    t.integer  "order"
+    t.integer  "note_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "notes", force: :cascade do |t|
     t.string   "title"
