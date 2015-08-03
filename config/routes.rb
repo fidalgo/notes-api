@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
 
+
   namespace :api do
     namespace :v1 do
       resources :users, except: [:new, :edit]
+      # Don't deeply nest the resources, otherwise things start to look too ugly
+      resources :notes, except: [:new, :edit]
+
     end
   end
 

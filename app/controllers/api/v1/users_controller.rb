@@ -27,10 +27,8 @@ class Api::V1::UsersController < ApplicationController
 
     if @user.save
       render json: @user, status: :created #, location: @user
-      # logger.info "Created User #{@user.inspect}"
     else
       render json: @user.errors, status: :unprocessable_entity
-      logger.info "===================== User with errors #{@user.errors.inspect}"
     end
   end
 
