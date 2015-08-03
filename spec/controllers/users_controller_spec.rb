@@ -25,7 +25,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   # adjust the attributes here as well.
   # let(:valid_attributes) {
   #   # skip("Add a hash of attributes valid for your model")
-  #   build(:user).attributes
+  #   attributes_for(:user)
   # }
 
   let(:invalid_attributes) {
@@ -39,7 +39,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe "GET #index" do
     it "assigns all users as @users" do
-      user = User.create! build(:user).attributes
+      user = User.create! attributes_for(:user)
       get :index, {}, valid_session
       expect(assigns(:users)).to eq([user])
       expect(response).to be_success
@@ -48,8 +48,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe "GET #show" do
     it "assigns the requested user as @user" do
-      user = User.create! build(:user).attributes
-      get :show, {:id => user.to_param}, valid_session
+      user = User.create! attributes_for(:user)
+      get :show, {:id => user.id}, valid_session
       expect(assigns(:user)).to eq(user)
       expect(response).to be_success
     end
@@ -59,12 +59,12 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     context "with valid params" do
       it "creates a new User" do
         expect {
-          post :create, {:user => build(:user).attributes}, valid_session
+          post :create, {:user => attributes_for(:user)}, valid_session
         }.to change(User, :count).by(1)
       end
 
       it "assigns a newly created user as @user" do
-        post :create, {:user => build(:user).attributes}, valid_session
+        post :create, {:user => attributes_for(:user)}, valid_session
         expect(assigns(:user)).to be_a(User)
         expect(assigns(:user)).to be_persisted
       end
@@ -72,8 +72,12 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context "with invalid params" do
       it "assigns a newly created but unsaved user as @user" do
-        post :create, {:user => invalid_attributes}, valid_session
-        expect(assigns(:user)).to be_a_new(User)
+        invalid_user = attributes_for(:user)
+        invalid_user = invalid_user.merge invalid_attributes
+        post :create, {:user => invalid_user}, valid_session
+        # expect(assigns(:user)).to be_a_new(User)
+        # expect(assigns(:user)).to be_persisted
+        expect(response).to have_http_status(422)
       end
     end
   end
@@ -81,27 +85,26 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   describe "PUT #update" do
     context "with valid params" do
       let(:new_attributes) {
-        # TODO: allow to check against the new parameters
         {name: Faker::Name.name}
       }
 
       it "updates the requested user" do
-        user = User.create! build(:user).attributes
+        user = User.create! attributes_for(:user)
         put :update, {:id => user.id, :user => new_attributes}, valid_session
         user.reload
         expect(user.name).to eq(new_attributes[:name])
       end
 
       it "assigns the requested user as @user" do
-        user = User.create! build(:user).attributes
-        put :update, {:id => user.id, :user => build(:user).attributes}, valid_session
+        user = User.create! attributes_for(:user)
+        put :update, {:id => user.id, :user => attributes_for(:user)}, valid_session
         expect(assigns(:user)).to eq(user)
       end
     end
 
     context "with invalid params" do
       it "assigns the user as @user" do
-        user = User.create! build(:user).attributes
+        user = User.create! attributes_for(:user)
         put :update, {:id => user.id, :user => invalid_attributes}, valid_session
         expect(response).to have_http_status(422)
       end
@@ -110,7 +113,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe "DELETE #destroy" do
     it "destroys the requested user" do
-      user = User.create! build(:user).attributes
+      user = User.create! attributes_for(:user)
       expect {
         delete :destroy, {:id => user.to_param}, valid_session
       }.to change(User, :count).by(-1)

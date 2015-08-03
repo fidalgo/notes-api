@@ -27,8 +27,10 @@ class Api::V1::UsersController < ApplicationController
 
     if @user.save
       render json: @user, status: :created #, location: @user
+      # logger.info "Created User #{@user.inspect}"
     else
       render json: @user.errors, status: :unprocessable_entity
+      logger.info "===================== User with errors #{@user.errors.inspect}"
     end
   end
 
@@ -42,7 +44,6 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: @user.errors, status: :unprocessable_entity
     end
-    logger.error " ------------------------------>>>>>> ERROR: #{@user.errors.inspect}"
   end
 
   # DELETE /users/1
@@ -60,6 +61,6 @@ class Api::V1::UsersController < ApplicationController
     end
 
     def user_params
-      params.require(:user).permit(:name, :email, :password_digest)
+      params.require(:user).permit(:name, :email, :password, :role)
     end
 end
