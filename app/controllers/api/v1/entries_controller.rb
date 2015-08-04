@@ -19,7 +19,7 @@ class Api::V1::EntriesController < ApplicationController
   # POST /entries.json
   def create
     @entry = Entry.new(entry_params)
-
+    authorize @entry
     if @entry.save
       render json: @entry, status: :created
     else
@@ -31,7 +31,7 @@ class Api::V1::EntriesController < ApplicationController
   # PATCH/PUT /entries/1.json
   def update
     @entry = Entry.find(params[:id])
-
+    authorize @entry
     if @entry.update(entry_params)
       head :no_content
     else
@@ -42,6 +42,7 @@ class Api::V1::EntriesController < ApplicationController
   # DELETE /entries/1
   # DELETE /entries/1.json
   def destroy
+    authorize @entry
     @entry.destroy
 
     head :no_content

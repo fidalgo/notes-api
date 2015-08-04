@@ -19,9 +19,10 @@ class Api::V1::NotesController < ApplicationController
   # POST /notes.json
   def create
     @note = Note.new(note_params)
+    authorize @note
 
     if @note.save
-      render json: @note, status: :created #, location: @note
+      render json: @note, status: :created
     else
       render json: @note.errors, status: :unprocessable_entity
     end
@@ -31,7 +32,7 @@ class Api::V1::NotesController < ApplicationController
   # PATCH/PUT /notes/1.json
   def update
     @note = Note.find(params[:id])
-
+    authorize @note
     if @note.update(note_params)
       head :no_content
     else
@@ -42,6 +43,7 @@ class Api::V1::NotesController < ApplicationController
   # DELETE /notes/1
   # DELETE /notes/1.json
   def destroy
+    authorize @note
     @note.destroy
 
     head :no_content
@@ -50,7 +52,7 @@ class Api::V1::NotesController < ApplicationController
   private
 
     def note
-      @note ||= Note.find(params[:id])
+      @note ||= Note.includes(:entries).find(params[:id])
     end
 
     def note_params
