@@ -5,7 +5,6 @@ class Api::V1::UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
-
     render json: @users
   end
 
@@ -18,13 +17,14 @@ class Api::V1::UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    authorize @user
   end
 
   # POST /users
   # POST /users.json
   def create
     @user = User.new(user_params)
-
+    authorize @user
     if @user.save
       render json: @user, status: :created #, location: @user
     else
@@ -36,6 +36,7 @@ class Api::V1::UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     @user = User.find(params[:id])
+    authorize @user
 
     if @user.update(user_params)
       head :no_content
@@ -47,6 +48,7 @@ class Api::V1::UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
+    authorize @user
     @user.destroy
 
     head :no_content

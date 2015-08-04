@@ -30,11 +30,11 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   let(:admin_auth) {
     ActionController::HttpAuthentication::Basic.encode_credentials(admin.email, admin.password)
-   }
+  }
 
-   let(:user_auth){
-     ActionController::HttpAuthentication::Basic.encode_credentials(user.email, user.password)
-   }
+  let(:user_auth){
+    ActionController::HttpAuthentication::Basic.encode_credentials(user.email, user.password)
+  }
   # This should return the minimal set of attributes required to create a valid
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   let(:valid_session) {
     # TODO: Can't use this as a valid_session, so will fill the request
     {'HTTP_AUTHORIZATION' => admin_auth }
- }
+  }
 
   describe "GET #index" do
     it "assigns all users as @users" do
@@ -73,65 +73,77 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   describe "POST #create" do
-    context "with valid params" do
-      it "creates a new User" do
-        expect {
+    context "as administrator" do
+      context "with valid params" do
+        it "creates a new User" do
+          expect {
+            request.env['HTTP_AUTHORIZATION'] = admin_auth
+            post :create, {:user => user_attributes}
+          }.to change(User.user, :count).by(1)
+        end
+
+        it "assigns a newly created user as @user" do
           request.env['HTTP_AUTHORIZATION'] = admin_auth
           post :create, {:user => user_attributes}
-        }.to change(User.user, :count).by(1)
+          expect(assigns(:user)).to be_a(User)
+          expect(assigns(:user)).to be_persisted
+        end
       end
 
-      it "assigns a newly created user as @user" do
-        post :create, {:user => user_attributes}, valid_session
-        expect(assigns(:user)).to be_a(User)
-        expect(assigns(:user)).to be_persisted
-      end
-    end
-
-    context "with invalid params" do
-      it "assigns a newly created but unsaved user as @user" do
-        invalid_user = user_attributes.merge invalid_attributes
-        post :create, {:user => invalid_user}, valid_session
-        expect(response).to have_http_status(422)
+      context "with invalid params" do
+        it "assigns a newly created but unsaved user as @user" do
+          invalid_user = user_attributes.merge invalid_attributes
+          request.env['HTTP_AUTHORIZATION'] = admin_auth
+          post :create, {:user => invalid_user}
+          expect(response).to have_http_status(422)
+        end
       end
     end
   end
 
   describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        {name: Faker::Name.name}
-      }
+    context "as administrator" do
+      context "with valid params" do
+        let(:new_attributes) {
+          {name: Faker::Name.name}
+        }
 
-      it "updates the requested user" do
-        user = User.create! user_attributes
-        put :update, {:id => user.id, :user => new_attributes}, valid_session
-        user.reload
-        expect(user.name).to eq(new_attributes[:name])
+        it "updates the requested user" do
+          user = User.create! user_attributes
+          request.env['HTTP_AUTHORIZATION'] = admin_auth
+          put :update, {:id => user.id, :user => new_attributes}
+          user.reload
+          expect(user.name).to eq(new_attributes[:name])
+        end
+
+        it "assigns the requested user as @user" do
+          user = User.create! user_attributes
+          request.env['HTTP_AUTHORIZATION'] = admin_auth
+          put :update, {:id => user.id, :user => user_attributes}
+          expect(assigns(:user)).to eq(user)
+        end
       end
 
-      it "assigns the requested user as @user" do
-        user = User.create! user_attributes
-        put :update, {:id => user.id, :user => user_attributes}, valid_session
-        expect(assigns(:user)).to eq(user)
+      context "with invalid params" do
+        it "assigns the user as @user" do
+          user = User.create! attributes_for(:user)
+          request.env['HTTP_AUTHORIZATION'] = admin_auth
+          put :update, {:id => user.id, :user => invalid_attributes}
+          expect(response).to have_http_status(422)
+        end
       end
     end
 
-    context "with invalid params" do
-      it "assigns the user as @user" do
-        user = User.create! attributes_for(:user)
-        put :update, {:id => user.id, :user => invalid_attributes}, valid_session
-        expect(response).to have_http_status(422)
+    describe "DELETE #destroy" do
+      context "as administrator" do
+        it "destroys the requested user" do
+          user = User.create! user_attributes
+          request.env['HTTP_AUTHORIZATION'] = admin_auth
+          expect {
+            delete :destroy, {:id => user.to_param}
+          }.to change(User.user, :count).by(-1)
+        end
       end
-    end
-  end
-
-  describe "DELETE #destroy" do
-    it "destroys the requested user" do
-      user = User.create! user_attributes
-      expect {
-        delete :destroy, {:id => user.to_param}, valid_session
-      }.to change(User.user, :count).by(-1)
     end
   end
 
