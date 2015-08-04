@@ -5,6 +5,7 @@ gem 'rails', '4.2.3'
 gem 'rails-api'
 
 gem 'spring', :group => :development
+gem 'simplecov', :require => false, :group => :test
 
 gem 'sqlite3'
 gem "pundit"
