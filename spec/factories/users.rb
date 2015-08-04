@@ -4,6 +4,7 @@ FactoryGirl.define do
     name {Faker::Name.name}
     email {Faker::Internet.email}
     password {Faker::Internet.password}
+    # password '5ecr3t'
     # Use string roles because otherwise they will be passed and integers
     # leading to errors. Explanation: https://github.com/thoughtbot/factory_girl/issues/680
     role 'user'
