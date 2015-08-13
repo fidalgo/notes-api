@@ -1,8 +1,7 @@
 class ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Basic::ControllerMethods
   include Pundit
-  before_action :current_user#, except: [:show, :index]
-  # after_action :verify_authorized
+  before_action :current_user
 
   protected
 
