@@ -1,6 +1,8 @@
 # notes-api
 This project uses rails-api to create an API for storing and retrieving notes.
 
+[![Code Climate](https://codeclimate.com/github/fidalgo/notes-api/badges/gpa.svg)](https://codeclimate.com/github/fidalgo/notes-api) [![Test Coverage](https://codeclimate.com/github/fidalgo/notes-api/badges/coverage.svg)](https://codeclimate.com/github/fidalgo/notes-api/coverage)
+
 ### Dependencies
 * rails
 * rails-api

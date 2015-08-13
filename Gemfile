@@ -6,6 +6,7 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 gem 'simplecov', :require => false, :group => :test
+gem "codeclimate-test-reporter", group: :test, require: nil
 
 gem 'sqlite3'
 gem "pundit"
