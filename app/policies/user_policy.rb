@@ -7,7 +7,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def create?
-      @current_user.admin?
+    @current_user.admin?
   end
 
   def new?
@@ -15,7 +15,13 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    @current_user == @user or @current_user.admin?
+    if @current_user.admin?
+      return true
+    elsif @current_user.id == @user.id
+      return @current_user.role == @user.role
+    else
+      return false
+    end
   end
 
   def edit?

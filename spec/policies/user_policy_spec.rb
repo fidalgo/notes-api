@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 describe UserPolicy do
   subject { described_class }
@@ -33,5 +34,14 @@ describe UserPolicy do
       admin = build(:user, :admin)
       expect(subject).to permit(admin, build(:user))
     end
+
+    it "denies access for user to change role" do
+      user = create(:user)
+      updated_user = User.find(user.id)
+      updated_user.role = 'admin'
+      expect(user.id).to eq(updated_user.id)
+      expect(subject).not_to permit(user, updated_user)
+    end
+
   end
 end
